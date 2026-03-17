@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Portfolio</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<header>
+  <h1>Mohammed Arif</h1>
+  <p>Register No: 25BCAD38</p>
+  <p>BCA Student | Aspiring Developer</p>
+</header>
+
+<section>
+
+<div class="card">
+  <h2>About Me</h2>
+  <p>I am learning web development using HTML, CSS, JavaScript and Python.</p>
+</div>
+
+<div class="card">
+  <h2>Skills</h2>
+  <div class="skills">
+    <span>Python</span>
+    <span>HTML</span>
+    <span>CSS</span>
+    <span>JavaScript</span>
+    <span>SQL</span>
+    <span>MongoDB</span>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Contact</h2>
+  <p>Email: 25bcad38@kristujayanti.com</p>
+  <p>Phone: 9986736779</p>
+</div>
+
+<div class="card">
+  <h2>Send Message</h2>
+
+<form action="/submit" method="POST" id="contactForm">
+
+  <input type="text" name="name" id="name" placeholder="Enter your name" required>
+
+  <input type="email" name="email" id="email" placeholder="Enter your email" required>
+
+  <input type="tel" name="phone" placeholder="Enter phone number">
+
+  <select name="project" id="project">
+    <option value="">Select Project Type</option>
+    <option>Website</option>
+    <option>App</option>
+    <option>Design</option>
+  </select>
+
+  <textarea name="message" id="message" placeholder="Enter your message"></textarea>
+
+  <button type="submit">Send</button>
+
+</form>
+
+<p id="msg"></p>
+
+</div>
+
+</section>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
