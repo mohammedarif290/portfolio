@@ -46,6 +46,30 @@ def submit():
 
     conn.commit()
     conn.close()
+    @app.route('/data')
+def view_data():
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM contacts")
+    rows = cursor.fetchall()
+
+    conn.close()
+
+    html = "<h1>📩 User Messages</h1>"
+
+    for row in rows:
+        html += f"""
+        <div style='border:1px solid white; padding:10px; margin:10px;'>
+            <p><b>Name:</b> {row[1]}</p>
+            <p><b>Email:</b> {row[2]}</p>
+            <p><b>Phone:</b> {row[3]}</p>
+            <p><b>Project:</b> {row[4]}</p>
+            <p><b>Message:</b> {row[5]}</p>
+        </div>
+        """
+
+    return html
 
     return "✅ Message Saved Successfully!"
 
