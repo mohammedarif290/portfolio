@@ -24,10 +24,12 @@ def init_db():
 
 init_db()
 
+# Home Page
 @app.route('/')
 def home():
     return render_template('index.html')
 
+# Form Submit
 @app.route('/submit', methods=['POST'])
 def submit():
     name = request.form['name']
@@ -46,7 +48,11 @@ def submit():
 
     conn.commit()
     conn.close()
-    @app.route('/data')
+
+    return "✅ Message Saved Successfully!"
+
+# View Data (NEW ROUTE)
+@app.route('/data')
 def view_data():
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
@@ -70,8 +76,6 @@ def view_data():
         """
 
     return html
-
-    return "✅ Message Saved Successfully!"
 
 if __name__ == '__main__':
     app.run(debug=True)
