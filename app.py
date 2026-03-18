@@ -1,16 +1,25 @@
 from flask import Flask, render_template, request
-import sqlite3
+import psycopg2
+import os
 
 app = Flask(__name__)
 
-# Create DB
+# Get DATABASE URL from Render
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+# Connect to PostgreSQL
+def get_db_connection():
+    conn = psycopg2.connect(DATABASE_URL)
+    return conn
+
+# Create table if not exists
 def init_db():
-    conn = sqlite3.connect('database.db')
+    conn = get_db_connection()
     cursor = conn.cursor()
 
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS contacts (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id SERIAL PRIMARY KEY,
         name TEXT,
         email TEXT,
         phone TEXT,
@@ -22,14 +31,15 @@ def init_db():
     conn.commit()
     conn.close()
 
+# Run once when app starts
 init_db()
 
-# Home Page
+# Home page
 @app.route('/')
 def home():
     return render_template('index.html')
 
-# Form Submit
+# Form submit
 @app.route('/submit', methods=['POST'])
 def submit():
     name = request.form['name']
@@ -38,11 +48,11 @@ def submit():
     project = request.form['project']
     message = request.form['message']
 
-    conn = sqlite3.connect('database.db')
+    conn = get_db_connection()
     cursor = conn.cursor()
 
     cursor.execute(
-        "INSERT INTO contacts (name, email, phone, project, message) VALUES (?, ?, ?, ?, ?)",
+        "INSERT INTO contacts (name, email, phone, project, message) VALUES (%s, %s, %s, %s, %s)",
         (name, email, phone, project, message)
     )
 
@@ -51,13 +61,13 @@ def submit():
 
     return "✅ Message Saved Successfully!"
 
-# View Data (NEW ROUTE)
+# View all data
 @app.route('/data')
 def view_data():
-    conn = sqlite3.connect('database.db')
+    conn = get_db_connection()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM contacts")
+    cursor.execute("SELECT * FROM contacts ORDER BY id DESC")
     rows = cursor.fetchall()
 
     conn.close()
@@ -66,7 +76,7 @@ def view_data():
 
     for row in rows:
         html += f"""
-        <div style='border:1px solid white; padding:10px; margin:10px;'>
+        <div style='border:1px solid black; padding:10px; margin:10px;'>
             <p><b>Name:</b> {row[1]}</p>
             <p><b>Email:</b> {row[2]}</p>
             <p><b>Phone:</b> {row[3]}</p>
